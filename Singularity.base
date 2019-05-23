@@ -1,0 +1,23 @@
+Bootstrap: yum
+OSVersion: 7
+MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearch/
+Include: yum
+
+%help
+CentOS 7 base for HEPHY
+
+
+%labels
+    Maintainer Dietrich Liko <Dietrich.Liko@oeaw.ac.at>
+    Version  v1.0
+
+
+%setup
+
+
+%files
+
+
+%post
+    mkdir /afs /cvmfs /cms
+

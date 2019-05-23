@@ -1,0 +1,10 @@
+[dliko-empty-ca-policy]
+name=Copr repo for empty-ca-policy owned by dliko
+baseurl=https://copr-be.cloud.fedoraproject.org/results/dliko/empty-ca-policy/epel-7-$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://copr-be.cloud.fedoraproject.org/results/dliko/empty-ca-policy/pubkey.gpg
+repo_gpgcheck=0
+enabled=1
+enabled_metadata=1

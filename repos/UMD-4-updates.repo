@@ -1,0 +1,10 @@
+[UMD-4-updates]
+name=UMD 4 updates (CentOS7)
+baseurl=http://repository.egi.eu/sw/production/umd/4/centos7/$basearch/updates
+exclude=dpm-* lfc-* lcgdm-*
+protect=1
+enabled=1
+# To use priorities you must have yum-priorities installed
+priority=1
+gpgcheck=1
+gpgkey=http://emisoft.web.cern.ch/emisoft/dist/EMI/3/RPM-GPG-KEY-emi http://repository.egi.eu/sw/production/umd/UMD-RPM-PGP-KEY http://www.qoscosgrid.org/qcg-packages/sl5/RPM-GPG-KEY-QCG http://download.nordugrid.org/RPM-GPG-KEY-nordugrid http://fedoraproject.org/static/0608B895.txt
