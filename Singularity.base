@@ -19,5 +19,7 @@ CentOS 7 base for HEPHY
 
 
 %post
+    yum -y update
+
     mkdir /afs /cvmfs /cms
 
