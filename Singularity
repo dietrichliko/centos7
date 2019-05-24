@@ -13,7 +13,8 @@ CentOS 7 for HEPHY
 
 
 %setup
-    mkdir -p ${SINGULARITY_ROOTFS}/etc/grid-security/vomsdir
+    mkdir    ${SINGULARITY_ROOTFS}/etc/grid-security
+    mkdir    ${SINGULARITY_ROOTFS}/etc/grid-security/vomsdir
     mkdir    ${SINGULARITY_ROOTFS}/etc/vomses
 
     cp -r vomsdir/ ${SINGULARITY_ROOTFS}/etc/grid-security/vomsdir/
@@ -31,7 +32,7 @@ CentOS 7 for HEPHY
     yum -y update
     yum -y install epel-release
     yum -y groupinstall "Development tools"
-    yum -y git-lfs
+    yum -y install git-lfs
 
     yum -y install yum-priorities
     yum -y install HEP_OSlibs empty-ca-policy ui

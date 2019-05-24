@@ -23,7 +23,7 @@ CentOS 7 base for HEPHY
     yum -y update
     yum -y install epel-release
     yum -y groupinstall "Development tools"
-    yum -y git-lfs
+    yum -y install git-lfs
 
     yum -y install cuda-cudart-9-2 \
                    cuda-libraries-9-2 \
