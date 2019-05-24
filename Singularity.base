@@ -20,6 +20,9 @@ CentOS 7 base for HEPHY
 
 %post
     yum -y update
+    yum -y install epel-release
+    yum -y groupinstall "Development tools"
+    yum -y install git-lfs
 
     mkdir /afs /cvmfs /cms
 

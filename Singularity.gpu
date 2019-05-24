@@ -4,7 +4,7 @@ MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearc
 Include: yum
 
 %help
-CentOS 7 for HEPHY
+CentOS 7 for HEPHY with Nvidia driver and cudnn
 
 
 %labels
@@ -24,6 +24,8 @@ CentOS 7 for HEPHY
     repos/UMD-4-base.repo                     /etc/yum.repos.d/
     repos/UMD-4-updates.repo                  /etc/yum.repos.d/
     repos/dliko-empty-ca-policy-epel-7.repo   /etc/yum.repos.d/
+    repos/cuda.repo                           /etc/yum.repos.d/
+    repos/nvidia-ml.repo                      /etc/yum.repos.d/
 
     profile.d/cmsenv.sh                       /etc/profile.d
 
@@ -36,10 +38,24 @@ CentOS 7 for HEPHY
     yum -y install yum-priorities
     yum -y install HEP_OSlibs empty-ca-policy ui
 
+    yum -y install cuda-cudart-9-2 \
+                   cuda-libraries-9-2 \
+                   cuda-libraries-dev-9-2 \
+                   libnccl-*+cuda9.2 \
+                   libnccl-devel-*+cuda9.2\
+                   cuda-nvml-dev-9-2 \
+                   cuda-minimal-build-9-2 \
+                   cuda-command-line-tools-9-2 \
+                   libcudnn7-*.cuda9.2 \
+                   libcudnn7-devel-*.cuda9.2
+
+
     yum clean all
     rm -rf /var/cache/yum
 
     ln -s /cvmfs/grid.cern.ch/etc/grid-security/certificates /etc/grid-security/certificates
+
+    ln -s cuda-9.2 /usr/local/cuda
 
     mkdir /cvmfs /afs /scratch
 
