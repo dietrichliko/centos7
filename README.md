@@ -3,19 +3,81 @@
 
 [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/3042)
 
-# Usage
+Singularity images based on CentOS7 for HEPHY
 
-The standard image supports the HEP experiment software
+Please report problems and suggestions to the [issue tracker](https://gitlab.cern.ch/hephyvienna/singularity/centos7/issues).
 
-    singularity shell -B /afs -B /cvmfs -B /scratch shub://dietrichliko/centos7
+## Usage
 
-Base image for testing
+The images are accessible via the [Singularity Hub](https://singularity-hub.org).
 
-    singularity shell -B /afs -B /cvmfs -B /scratch shub://dietrichliko/centos7:base
+Start container   
 
-Base image with Python36
-
-
-    singularity shell -B /afs -B /cvmfs -B /scratch shub://dietrichliko/centos7:py36
+    singulariy shell -B /cvmfs -B /scratch -B /afs shub://dietrichliko/centos7
 
 
+Execute command inside container
+
+    singularity exec -B /cvmfs -B /scratch -B /afs shub://dietrichliko/centos7 ls
+
+Download image for immediate startup of the container
+
+    singularity pull shub://dietrichliko/centos7
+    singularity shell -B /cvmfs -B /scratch -B /afs $SINGULARITY_CACHE/dietrichliko-centos7-latest.simg
+
+Environment variables are inherited from your actual environment. Verify their setting inside the
+container, as they might have unexpected consequences inside the new container
+
+    singularity exec shub://dietrichliko/centos7 env   
+
+More details on the usage of Singularity can be found the [documentation](https://www.sylabs.io/guides/2.6/user-guide/)
+
+# Available images
+
+A number of images are provided. They include the standard CentOS development
+tools and support for _git-lfs_. Further toolchains can be used via CVMFS.
+
+The container share the filesystem with it host and scripts and program
+can be easily edited outside the container. Therefore no editors are included.
+
+Please use the [issue tracker](https://gitlab.cern.ch/hephyvienna/singularity/centos7/issues) for additional needs.
+
+- __Standard:__ _shub://dietrichliko/centos7_
+
+  The standard image supports the HEP experiment software from cvmfs
+  and a Grid UI.
+
+  For the setup of _CMS software_ start the shell using the option -l (login),
+  as the aliases _cmsenv_ and _cmsrel_ are not inherited. This setup is only
+  for users that are part of the cms group.
+
+    singulariy shell -B /cvmfs -B /scratch -B /afs shub://dietrichliko/centos7
+
+
+- __GPU:__ _shub://dietrichliko/centos7.gpu_
+
+  The standard image and drivers for Nvidia CUDA 9.2 and CUDNN7. Its use
+  makes only sense on _hepgpu01.hephy.at_
+
+- __Base:__ _shub://dietrichliko/centos7.base_
+
+  The base CentOS7 image.
+
+- __GPUBase__: _shub://dietrichliko/centos7.gpubase_
+
+  The base CentOS7 image with Nvidia CUDA 9.2 and CUDNN7.
+
+- __Python36__: _shub://dietrichliko/centos7.py36_
+
+  The base CentOS7 image with python36 from the [SCL](https://www.softwarecollections.org/en/).
+
+## License
+
+MIT
+
+## Author
+
+Written by [Dietrich Liko](http://hephy.at/dliko) in May 2019
+
+[Institute for High Energy Physics](http://www.hephy.at) of the
+[Austrian Academy of Sciences](http://www.oeaw.ac.at)
