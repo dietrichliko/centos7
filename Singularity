@@ -47,13 +47,13 @@ CentOS 7 for HEPHY
     export MYPROXY_SERVER=myproxy.cern.ch
     export DPNS_HOST=hephyse.oeaw.ac.at
     export DPM_HOST=hephyse.oeaw.ac.at
+
+%runscript
     id -Gz | tr '\0' '\n' | grep '^1200$' > /dev/null
-    if [ $? -eq 0 ]
+    if [ $? -eq 0 -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
     then
-      unset SCRAM_ARCH
-      if [ -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
-      then
-          source /cvmfs/cms.cern.ch/cmsset_default.sh
-          export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
-      fi
+       unset SCRAM_ARCH
+       source /cvmfs/cms.cern.ch/cmsset_default.sh
+       export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
     fi
+    exec "$@"
