@@ -26,8 +26,6 @@ CentOS 7 for HEPHY
     repos/UMD-4-updates.repo                  /etc/yum.repos.d/
     repos/dliko-empty-ca-policy-epel-7.repo   /etc/yum.repos.d/
 
-    profile.d/cmsenv.sh                       /etc/profile.d
-
 %post
     yum -y update
     yum -y install epel-release
@@ -49,3 +47,13 @@ CentOS 7 for HEPHY
     export MYPROXY_SERVER=myproxy.cern.ch
     export DPNS_HOST=hephyse.oeaw.ac.at
     export DPM_HOST=hephyse.oeaw.ac.at
+    id -Gz | tr '\0' '\n' | grep '^1200$' > /dev/null
+    if [ $? -eq 0 ]
+    then
+      unset SCRAM_ARCH
+      if [ -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
+      then
+          source /cvmfs/cms.cern.ch/cmsset_default.sh
+          export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
+      fi
+    fi
