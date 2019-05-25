@@ -35,7 +35,9 @@ CentOS 7 base for HEPHY
                    cuda-command-line-tools-9-2 \
                    libcudnn7-*.cuda9.2 \
                    libcudnn7-devel-*.cuda9.2 \
-                   nvidia-driver-cuda
+                   nvidia-driver-cuda \
+                   nvidia-driver-devel
 
+    ln -s cuda-9-2 /usr/local/cuda
 
     mkdir /afs /cvmfs /cms

@@ -20,6 +20,20 @@ Execute command inside container
 
     singularity exec -B /cvmfs -B /scratch -B /afs shub://dietrichliko/centos7 ls
 
+To run inside the container in the batch system, use a wrapper script. See examples
+in the [repository](https://gitlab.cern.ch/hephyvienna/singularity/centos7).
+
+    #! /bin/bash
+    #SBATCH --job-name="singularity_helloworld"
+    #SBATCH --output="singularity_helloworld.%j.out"
+    #SBATCH --error="singularity_helloworld.%j.err"
+    #SBTACH --time=00:10:00
+
+    container='shub://dietrichliko/centos7'
+
+    singularity exec -B /afs -B /cvmfs $container helloworld.sh
+
+
 Download image for immediate startup of the container
 
     singularity pull shub://dietrichliko/centos7

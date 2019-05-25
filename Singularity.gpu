@@ -49,7 +49,8 @@ CentOS 7 for HEPHY with Nvidia driver and cudnn
                    cuda-command-line-tools-9-2 \
                    libcudnn7-*.cuda9.2 \
                    libcudnn7-devel-*.cuda9.2 \
-                   nvidia-driver-cuda
+                   nvidia-driver-cuda \
+                   nvidia-driver-devel
 
 
     yum clean all
