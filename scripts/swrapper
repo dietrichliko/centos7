@@ -1,0 +1,107 @@
+#! /bin/sh -x
+#
+# Singularity Wrapper for HEPHY
+#
+# - Trivial caching mechansim to avoid multiple pulls for batch jobs
+# - Files on AFS are also cached
+# - Binds of the most common directories
+#
+#
+# Author:
+#   Dietrich Liko <Dietrich.Liko@oeaw.ac.at>
+#   Institute for High Energy Physics
+#   Austrian Academy of Sciences 
+
+# singularity command and options
+
+cmd=$1
+shift
+
+opts=''
+while [ "${1:0:1}" = "-" ]
+do
+   opts="$opts $1"
+   shift
+done
+
+# determine cache dir
+
+if [ ! -z $SINGULARITY_PULLDIR ]
+then
+  cache=$SINGULARITY_PULLDIR
+elif [ ! -z $SINGULARITY_CACHEDIR ]
+then
+  cache=$SINGULARITY_CACHEDIR
+else
+  cache="/tmp/singularity/${USER}"
+  mkdir -p $cache
+  export SINGULARITY_PULLDIR $cache
+fi
+
+# image can be url or file
+
+if [[ "$1" =~ ://([^:]*)(:(.*)){0,1} ]]
+then
+
+  # image is an url
+
+  if [ -z ${BASH_REMATCH[3]} ]
+  then
+    name="${BASH_REMATCH[1]//\//-}-latest"
+  else
+    name="${BASH_REMATCH[1]//\//-}-${BASH_REMATCH[3]}"
+  fi
+
+  img="${cache}/${name}.simg"
+  (
+    flock 200
+    if [ -e $img ]
+    then
+      find $img -cmin +60 -delete
+    fi 
+
+    if [ -e $img ]
+    then
+      echo "Found valid image $name in cache"
+    else
+      singularity pull -n "${name}.simg" $1 || exit $?
+    fi
+   ) 200> "${img}.lock"
+ 
+else
+
+  # image is a file
+  path=$(readlink -m $img)
+  if [ ${path:0:4} = "/afs" ]
+  then
+
+    # image on afs
+
+    img="${cache}/$(basename $1)"
+    (
+      flock 200
+      if [ "$img" -ot "$path" ]
+      then
+        cp $path $img
+      else
+        echo "Found valid image in cache"
+      fi
+    ) 200>"${img}.lock" 
+
+  else
+    img=$1
+  endif
+
+fi
+
+shift
+
+# binds for stadard dirs
+
+for mnt in /afs /cvmfs /scratch
+do
+  opts="$opts -B $mnt"
+done
+
+echo singularity $cmd $opts $img $*
+singularity $cmd $opts $img $*

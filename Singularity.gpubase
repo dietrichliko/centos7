@@ -41,3 +41,6 @@ CentOS 7 base for HEPHY
     ln -s cuda-9-2 /usr/local/cuda
 
     mkdir /afs /cvmfs /cms
+
+%test
+    nvidia-smi

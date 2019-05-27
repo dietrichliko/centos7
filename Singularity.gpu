@@ -66,12 +66,19 @@ CentOS 7 for HEPHY with Nvidia driver and cudnn
     export DPNS_HOST=hephyse.oeaw.ac.at
     export DPM_HOST=hephyse.oeaw.ac.at
 
-%runscript
-    id -Gz | tr '\0' '\n' | grep '^1200$' > /dev/null
+%apprun cms
     if [ $? -eq 0 -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
     then
-       unset SCRAM_ARCH
        source /cvmfs/cms.cern.ch/cmsset_default.sh
        export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
     fi
     exec "$@"
+
+%appenv
+    unset SCRAM_ARCH
+
+%apphelp
+    Start the conainer inside cms environment
+
+%test
+    nvidia-smi

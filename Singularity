@@ -48,12 +48,35 @@ CentOS 7 for HEPHY
     export DPNS_HOST=hephyse.oeaw.ac.at
     export DPM_HOST=hephyse.oeaw.ac.at
 
-%runscript
-    id -Gz | tr '\0' '\n' | grep '^1200$' > /dev/null
+%apprun cms
     if [ $? -eq 0 -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
     then
-       unset SCRAM_ARCH
        source /cvmfs/cms.cern.ch/cmsset_default.sh
        export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
     fi
     exec "$@"
+
+%appenv
+    unset SCRAM_ARCH
+
+%apphelp
+    Start the conainer inside cms environment
+
+%test
+    if [ ! -d /cvmfs/sft.cern.ch ]
+    then
+      echo "FATAL: Cannot access CVMFS repository sft.cern.ch"
+      exit 1
+    fi
+
+    root_top="/cvmfs/sft.cern.ch/lcg/app/releases/ROOT"
+    gcc_top="/cvmfs/sft.cern.ch/lcg/external/gcc"
+    gcc_name="4.8.*"
+
+    gcc_latest=$(find $gcc_top -mindepth 1 -maxdepth 1 -name $gcc_name -printf "%P\n" | cut -d/ -f 1 | sort | tail -1)
+    source $gcc_top/$gcc_latest/x86_64-centos7/setup.sh
+
+    root_latest=$(find $root_top -mindepth 2 -maxdepth 2 -name $LCGPLAT -printf "%P\n" | cut -d/ -f 1 | sort | tail -1)
+    source $root_top/$root_latest/$LCGPLAT/bin/thisroot.sh
+
+    root -b -n -e "gApplication->Terminate();"
