@@ -42,5 +42,3 @@ CentOS 7 base for HEPHY
 
     mkdir /afs /cvmfs /cms
 
-%test
-    nvidia-smi

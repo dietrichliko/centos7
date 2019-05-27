@@ -74,11 +74,8 @@ CentOS 7 for HEPHY with Nvidia driver and cudnn
     fi
     exec "$@"
 
-%appenv
+%appenv cms
     unset SCRAM_ARCH
 
-%apphelp
+%apphelp cms
     Start the conainer inside cms environment
-
-%test
-    nvidia-smi

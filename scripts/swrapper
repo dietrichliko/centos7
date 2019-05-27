@@ -64,33 +64,38 @@ then
     then
       echo "Found valid image $name in cache"
     else
-      singularity pull -n "${name}.simg" $1 || exit $?
+      singularity pull -n "${name}.simg" $1
     fi
    ) 200> "${img}.lock"
+   if [ $? -ne 0 ]
+   then
+     exit 1
+   fi
  
 else
+  echo
 
   # image is a file
-  path=$(readlink -m $img)
-  if [ ${path:0:4} = "/afs" ]
-  then
+#  path=$(readlink -m $img)
+#  if [ ${path:0:4} = "/afs" ]
+#  then
 
     # image on afs
 
-    img="${cache}/$(basename $1)"
-    (
-      flock 200
-      if [ "$img" -ot "$path" ]
-      then
-        cp $path $img
-      else
-        echo "Found valid image in cache"
-      fi
-    ) 200>"${img}.lock" 
+#    img="${cache}/$(basename $1)"
+#    (
+#      flock 200
+#      if [ "$img" -ot "$path" ]
+#      then
+#        cp $path $img
+#      else
+#        echo "Found valid image in cache"
+#      fi
+#    ) 200>"${img}.lock" 
 
-  else
-    img=$1
-  endif
+#  else
+#    img=$1
+#  endif
 
 fi
 
