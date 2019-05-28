@@ -4,8 +4,10 @@ MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearc
 Include: yum
 
 %help
-CentOS 7 for HEPHY
-
+    CentOS 7 for HEPHY analysis.
+    * CVMFS
+    * Grid UI
+    * HEP_OSlibs
 
 %labels
     Maintainer Dietrich Liko <Dietrich.Liko@oeaw.ac.at>
@@ -49,10 +51,14 @@ CentOS 7 for HEPHY
     export DPM_HOST=hephyse.oeaw.ac.at
 
 %apprun cms
-    if [ $? -eq 0 -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
+    if [ -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
     then
        source /cvmfs/cms.cern.ch/cmsset_default.sh
        export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
+    else
+       echo "FATAL: Cannot access CVMFS repository cms.cern.ch"
+       echo "FATAL: No CMS environment found.
+      exit 1
     fi
     exec "$@"
 
@@ -60,4 +66,7 @@ CentOS 7 for HEPHY
     unset SCRAM_ARCH
 
 %apphelp
-    Start the conainer inside cms environment
+    CentOS 7 for HEPHY analysis with CMS environment.
+    * CVMFS
+    * Grid UI
+    * HEP_OSlibs

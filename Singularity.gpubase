@@ -4,16 +4,15 @@ MirrorURL: http://mirror.centos.org/centos-%{OSVERSION}/%{OSVERSION}/os/$basearc
 Include: yum
 
 %help
-CentOS 7 base for HEPHY
-
+   CentOS 7 base image for HEPHY with GPU support.
+   * CVMFS
+   * CUDA 9.2 / CUDNN7
 
 %labels
     Maintainer Dietrich Liko <Dietrich.Liko@oeaw.ac.at>
     Version  v1.0
 
-
 %setup
-
 
 %files
     repos/cuda.repo                           /etc/yum.repos.d/
@@ -42,3 +41,24 @@ CentOS 7 base for HEPHY
 
     mkdir /afs /cvmfs /cms
 
+%apprun root
+    if [ ! -d /cvmfs/sft.cern.ch ]
+    then
+      echo "FATAL: Cannot access CVMFS repository sft.cern.ch"
+      exit 1
+    fi
+
+    root_top="/cvmfs/sft.cern.ch/lcg/app/releases/ROOT"
+    gcc_top="/cvmfs/sft.cern.ch/lcg/external/gcc"
+    gcc_name="4.8.*"
+
+    gcc_latest=$(find $gcc_top -mindepth 1 -maxdepth 1 -name $gcc_name -printf "%P\n" | cut -d/ -f 1 | sort | tail -1)
+    source $gcc_top/$gcc_latest/x86_64-centos7/setup.sh
+
+    root_latest=$(find $root_top -mindepth 2 -maxdepth 2 -name $LCGPLAT -printf "%P\n" | cut -d/ -f 1 | sort | tail -1)
+    source $root_top/$root_latest/$LCGPLAT/bin/thisroot.sh
+
+    root "$@"
+
+%apphelp root
+    Start the latest version of ROOT from CVMFS.

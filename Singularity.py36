@@ -6,24 +6,20 @@ Include: yum
 %help
 CentOS 7 with Python36 for HEPHY
 
-
 %labels
     Maintainer Dietrich Liko <Dietrich.Liko@oeaw.ac.at>
     Version  v1.0
 
-
 %setup
 
-
 %files
-
 
 %post
     yum -y update
     yum -y install epel-release
     yum -y groupinstall "Development tools"
     yum -y install git-lfs
-    
+
     yum -y install centos-release-scl
     yum -y install rh-python36
 

@@ -10,7 +10,7 @@
 # Author:
 #   Dietrich Liko <Dietrich.Liko@oeaw.ac.at>
 #   Institute for High Energy Physics
-#   Austrian Academy of Sciences 
+#   Austrian Academy of Sciences
 
 # singularity command and options
 
@@ -26,43 +26,38 @@ done
 
 # determine cache dir
 
-if [ ! -z $SINGULARITY_PULLDIR ]
+if [ ! -z "$SINGULARITY_PULLDIR" ]
 then
-  cache=$SINGULARITY_PULLDIR
-elif [ ! -z $SINGULARITY_CACHEDIR ]
+  cache="$SINGULARITY_PULLDIR"
+elif [ ! -z "$SINGULARITY_CACHEDIR" ]
 then
-  cache=$SINGULARITY_CACHEDIR
+  cache="$SINGULARITY_CACHEDIR"
 else
   cache="/tmp/singularity/${USER}"
   mkdir -p $cache
-  export SINGULARITY_PULLDIR $cache
+  export SINGULARITY_PULLDIR=$cache
 fi
 
 # image can be url or file
 
-if [[ "$1" =~ ://([^:]*)(:(.*)){0,1} ]]
+if [ "$1" =~ ://([^:]*)(:(.*)){0,1} ]
 then
 
   # image is an url
 
-  if [ -z ${BASH_REMATCH[3]} ]
-  then
-    name="${BASH_REMATCH[1]//\//-}-latest"
-  else
-    name="${BASH_REMATCH[1]//\//-}-${BASH_REMATCH[3]}"
-  fi
+  name="${BASH_REMATCH[1]//\//-}-${BASH_REMATCH[3]:-'latest'}"
 
   img="${cache}/${name}.simg"
   (
     flock 200
-    if [ -e $img ]
+    if [ -e "$img" ]
     then
-      find $img -cmin +60 -delete
-    fi 
+      find "$img" -cmin +60 -delete
+    fi
 
-    if [ -e $img ]
+    if [ -e "$img" ]
     then
-      echo "Found valid image $name in cache"
+      echo "INFO: Found valid image ${name} in cache"
     else
       singularity pull -n "${name}.simg" $1
     fi
@@ -71,31 +66,31 @@ then
    then
      exit 1
    fi
- 
+
 else
-  echo
 
   # image is a file
-#  path=$(readlink -m $img)
-#  if [ ${path:0:4} = "/afs" ]
-#  then
+  path=$(readlink -m $1)
+  if [ ${path:0:4} = "/afs" ]
+  then
 
     # image on afs
 
-#    img="${cache}/$(basename $1)"
-#    (
-#      flock 200
-#      if [ "$img" -ot "$path" ]
-#      then
-#        cp $path $img
-#      else
-#        echo "Found valid image in cache"
-#      fi
-#    ) 200>"${img}.lock" 
+    name=$(basename $1)
+    img="${cache}/${name}"
+    (
+      flock 200
+      if [ "$img" -ot "$path" ]
+      then
+        cp "$path" "$img"
+      else
+        echo "INFO: Found valid image ${name} in cache"
+      fi
+    ) 200>"${img}.lock"
 
-#  else
-#    img=$1
-#  endif
+  else
+    img=$1
+  endif
 
 fi
 
