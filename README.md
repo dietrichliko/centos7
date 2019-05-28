@@ -1,5 +1,9 @@
 # Singularity images for CentOS7 @ HEPHY
 
+
+
+[![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/3042)
+
 Singularity images based on CentOS7 for HEPHY
 
 Please report problems and suggestions to the [issue tracker](https://gitlab.cern.ch/hephyvienna/singularity/centos7/issues).
