@@ -57,15 +57,15 @@ Include: yum
        export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
     else
        echo "FATAL: Cannot access CVMFS repository cms.cern.ch"
-       echo "FATAL: No CMS environment found.
-      exit 1
+       echo "FATAL: No CMS environment found."
+       exit 1
     fi
     exec "$@"
 
-%appenv
+%appenv cms
     unset SCRAM_ARCH
 
-%apphelp
+%apphelp cms
     CentOS 7 for HEPHY analysis with CMS environment.
     * CVMFS
     * Grid UI

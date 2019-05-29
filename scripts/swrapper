@@ -14,54 +14,62 @@
 
 # singularity command and options
 
-cmd=$1
-shift
 
 opts=''
-while [ "${1:0:1}" = "-" ]
+while [ ${1:0:1} = "-" ]
 do
    opts="$opts $1"
    shift
 done
 
+cmd=$1
+shift
+
+while [ ${1:0:1} = "-" ]
+do
+   opts="$opts $1 $2"
+   shift 2
+done
+
 # determine cache dir
 
-if [ ! -z "$SINGULARITY_PULLDIR" ]
+if [ ! -z $SINGULARITY_PULLDIR ]
 then
-  cache="$SINGULARITY_PULLDIR"
-elif [ ! -z "$SINGULARITY_CACHEDIR" ]
+  cache=$SINGULARITY_PULLDIR
+elif [ ! -z $SINGULARITY_CACHEDIR ]
 then
-  cache="$SINGULARITY_CACHEDIR"
+  cache=$SINGULARITY_CACHEDIR
 else
   cache="/tmp/singularity/${USER}"
   mkdir -p $cache
   export SINGULARITY_PULLDIR=$cache
 fi
 
+echo
 # image can be url or file
 
-if [ "$1" =~ ://([^:]*)(:(.*)){0,1} ]
+if [[ $1 =~ ://([^:]*)(:(.*)){0,1} ]]
 then
 
   # image is an url
 
-  name="${BASH_REMATCH[1]//\//-}-${BASH_REMATCH[3]:-'latest'}"
+  name="${BASH_REMATCH[1]//\//-}-${BASH_REMATCH[3]:-latest}"
 
   img="${cache}/${name}.simg"
   (
     flock 200
-    if [ -e "$img" ]
+    if [ -e $img ]
     then
-      find "$img" -cmin +60 -delete
+      find $img -cmin +60 -delete
     fi
 
-    if [ -e "$img" ]
+    if [ -e $img ]
     then
       echo "INFO: Found valid image ${name} in cache"
     else
-      singularity pull -n "${name}.simg" $1
+      singularity pull -n ${name}.simg $1
     fi
-   ) 200> "${img}.lock"
+   ) 200> ${img}.lock
    if [ $? -ne 0 ]
    then
      exit 1
@@ -71,7 +79,7 @@ else
 
   # image is a file
   path=$(readlink -m $1)
-  if [ ${path:0:4} = "/afs" ]
+  if [ ${path:0:5} = "/afs/" ]
   then
 
     # image on afs
@@ -80,17 +88,17 @@ else
     img="${cache}/${name}"
     (
       flock 200
-      if [ "$img" -ot "$path" ]
+      if [ $img -ot $path ]
       then
-        cp "$path" "$img"
+        cp $path $img
       else
         echo "INFO: Found valid image ${name} in cache"
       fi
-    ) 200>"${img}.lock"
+    ) 200>${img}.lock
 
   else
     img=$1
-  endif
+  fi
 
 fi
 
@@ -98,10 +106,13 @@ shift
 
 # binds for stadard dirs
 
-for mnt in /afs /cvmfs /scratch
-do
-  opts="$opts -B $mnt"
-done
+if [ $cmd != 'help' ] && [ $cmd != 'apps' ]
+then
+  for mnt in /afs /cvmfs /scratch
+  do
+   opts="$opts -B $mnt"
+  done
+fi
 
 echo singularity $cmd $opts $img $*
 singularity $cmd $opts $img $*

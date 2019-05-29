@@ -24,6 +24,7 @@ Include: yum
     mkdir /afs /cvmfs /cms
 
 %apprun root
+    set -x
     if [ ! -d /cvmfs/sft.cern.ch ]
     then
       echo "FATAL: Cannot access CVMFS repository sft.cern.ch"
@@ -35,9 +36,11 @@ Include: yum
     gcc_name="4.8.*"
 
     gcc_latest=$(find $gcc_top -mindepth 1 -maxdepth 1 -name $gcc_name -printf "%P\n" | cut -d/ -f 1 | sort | tail -1)
+    echo source $gcc_top/$gcc_latest/x86_64-centos7/setup.sh
     source $gcc_top/$gcc_latest/x86_64-centos7/setup.sh
 
     root_latest=$(find $root_top -mindepth 2 -maxdepth 2 -name $LCGPLAT -printf "%P\n" | cut -d/ -f 1 | sort | tail -1)
+    echo source $root_top/$root_latest/$LCGPLAT/bin/thisroot.sh
     source $root_top/$root_latest/$LCGPLAT/bin/thisroot.sh
 
     root "$@"
