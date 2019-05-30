@@ -28,6 +28,7 @@ Include: yum
     repos/UMD-4-updates.repo                  /etc/yum.repos.d/
     repos/dliko-empty-ca-policy-epel-7.repo   /etc/yum.repos.d/
 
+    libexec/cmsenv.sh                         /usr/local/libexec/
 %post
     yum -y update
     yum -y install epel-release
@@ -51,17 +52,12 @@ Include: yum
     export DPM_HOST=hephyse.oeaw.ac.at
 
 %apprun cms
-    if [ -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
+    if [ $# -gt 0 ]
     then
-       source /cvmfs/cms.cern.ch/cmsset_default.sh
-       export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
+      exec /bin/bash --init-file=/usr/local/libexec/cmsenv.sh -c "$@"
     else
-       echo "FATAL: Cannot access CVMFS repository cms.cern.ch"
-       echo "FATAL: No CMS environment found."
-       exit 1
+      exec /bin/bash --init-file=/usr/local/libexec/cmsenv.sh
     fi
-    exec "$@"
-
 %appenv cms
     unset SCRAM_ARCH
 

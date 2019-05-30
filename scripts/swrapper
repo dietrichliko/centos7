@@ -1,4 +1,4 @@
-#! /bin/sh -x
+#! /bin/sh
 #
 # Singularity Wrapper for HEPHY
 #
@@ -67,6 +67,7 @@ then
     then
       echo "INFO: Found valid image ${name} in cache"
     else
+      echo "Pulling $1"
       singularity pull -n ${name}.simg $1
     fi
    ) 200> ${img}.lock
@@ -90,6 +91,7 @@ else
       flock 200
       if [ $img -ot $path ]
       then
+        echo "Caching $name from AFS ..."
         cp $path $img
       else
         echo "INFO: Found valid image ${name} in cache"

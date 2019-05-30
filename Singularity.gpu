@@ -31,6 +31,7 @@ Include: yum
     repos/cuda.repo                           /etc/yum.repos.d/
     repos/nvidia-ml.repo                      /etc/yum.repos.d/
 
+    libexec/cmsenv.sh                         /usr/local/libexec/
 %post
     yum -y update
     yum -y install epel-release
@@ -53,13 +54,10 @@ Include: yum
                    nvidia-driver-cuda \
                    nvidia-driver-devel
 
-
     yum clean all
     rm -rf /var/cache/yum
 
     ln -s /cvmfs/grid.cern.ch/etc/grid-security/certificates /etc/grid-security/certificates
-
-    ln -s cuda-9.2 /usr/local/cuda
 
     mkdir /cvmfs /afs /scratch
 
@@ -70,23 +68,17 @@ Include: yum
     export DPM_HOST=hephyse.oeaw.ac.at
 
 %apprun cms
-    if [ -e /cvmfs/cms.cern.ch/cmsset_default.sh ]
+    if [ $# -gt 0 ]
     then
-      source /cvmfs/cms.cern.ch/cmsset_default.sh
-      export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
+      exec /bin/bash --init-file=/usr/local/libexec/cmsenv.sh -c "$@"
     else
-      echo "FATAL: Cannot access CVMFS repository cms.cern.ch"
-      echo "FATAL: No CMS environment found.
-      exit 1
+      exec /bin/bash --init-file=/usr/local/libexec/cmsenv.sh
     fi
-    exec "$@"
-
-%appenv
+%appenv cms
     unset SCRAM_ARCH
 
-%apphelp
-    CentOS 7 for HEPHY analysis with CMS environment and GPU.
+%apphelp cms
+    CentOS 7 for HEPHY analysis with CMS environment.
     * CVMFS
     * Grid UI
     * HEP_OSlibs
-    * CUDA 9.2 / CUDNN7
